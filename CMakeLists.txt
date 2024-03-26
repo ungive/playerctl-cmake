@@ -10,7 +10,7 @@ set(PLAYERCTL_EXTRACT_DIRNAME
     "The name of the directory that is created when extracting the source archive"
 )
 
-find_file(PLAYERCTL_TEST NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} CMAKE_FIND_ROOT_PATH_BOTH)
+find_file(PLAYERCTL_TEST NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} NO_DEFAULT_PATH)
 if (NOT PLAYERCTL_TEST)
     message("downloading playerctl sources from ${PLAYERCTL_SRC_URL}")
     set(PCTL_TAR_FILE ${CMAKE_CURRENT_BINARY_DIR}/playerctl.tar.gz)
@@ -23,7 +23,7 @@ if (NOT PLAYERCTL_TEST)
     file(REMOVE ${PCTL_TAR_FILE})
 endif(NOT PLAYERCTL_TEST)
 
-find_file(PLAYERCTL NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
+find_file(PLAYERCTL NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} REQUIRED NO_DEFAULT_PATH)
 
 find_package(PkgConfig REQUIRED)
 
