@@ -1,20 +1,29 @@
 cmake_minimum_required(VERSION 3.27)
 project(playerctl)
 
-find_file(PLAYERCTL_TEST NAMES playerctl playerctl-2.4.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR} CMAKE_FIND_ROOT_PATH_BOTH)
+set(PLAYERCTL_SRC_URL
+    "https://github.com/altdesktop/playerctl/archive/v2.4.1.tar.gz" CACHE STRING
+    "A URL from which a tar.gz archive with the playerctl sources can be downloaded"
+)
+set(PLAYERCTL_EXTRACT_DIRNAME
+    "playerctl-2.4.1" CACHE STRING
+    "The name of the directory that is created when extracting the source archive"
+)
+
+find_file(PLAYERCTL_TEST NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} CMAKE_FIND_ROOT_PATH_BOTH)
 if (NOT PLAYERCTL_TEST)
-    message("downloading playerctl")
-    set(PCTL_TAR_FILE ${CMAKE_CURRENT_SOURCE_DIR}/v2.4.1.tar.gz)
-    file(DOWNLOAD https://github.com/altdesktop/playerctl/archive/v2.4.1.tar.gz ${PCTL_TAR_FILE})
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${PCTL_TAR_FILE}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-    
+    message("downloading playerctl sources from ${PLAYERCTL_SRC_URL}")
+    set(PCTL_TAR_FILE ${CMAKE_CURRENT_BINARY_DIR}/playerctl.tar.gz)
+    file(DOWNLOAD ${PLAYERCTL_SRC_URL} ${PCTL_TAR_FILE})
+    set(EXTRACT_DIR ${CMAKE_CURRENT_BINARY_DIR}/extract)
+    file(MAKE_DIRECTORY ${EXTRACT_DIR})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf ${PCTL_TAR_FILE} WORKING_DIRECTORY ${EXTRACT_DIR})
+    file(RENAME ${EXTRACT_DIR}/${PLAYERCTL_EXTRACT_DIRNAME} ${CMAKE_CURRENT_SOURCE_DIR}/playerctl)
+    file(REMOVE_RECURSE ${EXTRACT_DIR})
     file(REMOVE ${PCTL_TAR_FILE})
 endif(NOT PLAYERCTL_TEST)
 
-find_file(PLAYERCTL NAMES playerctl playerctl-2.4.1 PATHS ${CMAKE_CURRENT_SOURCE_DIR} CMAKE_FIND_ROOT_PATH_BOTH)
+find_file(PLAYERCTL NAMES playerctl PATHS ${CMAKE_CURRENT_SOURCE_DIR} REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
 
 find_package(PkgConfig REQUIRED)
 

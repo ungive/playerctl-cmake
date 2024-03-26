@@ -9,4 +9,4 @@ build:
 		cmake --build .
 
 clean:
-	rm -rf build playerctl playerctl-2.4.1
+	rm -rf build playerctl
